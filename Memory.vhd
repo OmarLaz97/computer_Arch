@@ -25,7 +25,7 @@ signal Memory : Memory_type;
 begin 
 	process(clk) is
 	begin 
-		if Reset='1' then
+		if Reset='1' and falling_edge(clk)  then
 			dataout1<=Memory(0);
 		else 
 

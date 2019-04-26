@@ -2,9 +2,7 @@ Library ieee;
 Use ieee.std_logic_1164.all;
 
 Entity CU is 
-  port(  
-
-        clk: in std_logic;
+  port( clk: in std_logic;
         opCode : in std_logic_vector(4 downto 0); 
 	resetSignalin : in std_logic;
         resetSignal : out std_logic;
@@ -30,10 +28,10 @@ end CU;
 
 Architecture a_CU of CU is
     begin
-        process(clk) 
+        process(clk,resetSignalin) 
         begin
             if opCode = "00000" then  --Nop
-                resetSignal <= '0';
+                resetSignal <= '1';
                 Mux_PcP1_Call_Jump <= '0'; 
                 Mux_Mux1_Mem <= '0';
                 Mux_MemAdressValue <= "00";
