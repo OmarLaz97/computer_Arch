@@ -2,7 +2,8 @@ Library ieee;
 Use ieee.std_logic_1164.all;
 use IEEE.numeric_std.all;
 Entity ALUUnit is port( 
-R1,R2,imm : in std_logic_vector (15 downto 0);
+R1,R2 : in std_logic_vector (15 downto 0);
+imm : in std_logic_vector (4 downto 0);
 S : in std_logic_vector (4 downto 0); 
 Cin,Clk : in std_logic;
 Output : out std_logic_vector (15 downto 0);
@@ -22,7 +23,7 @@ end component;
 
 component Alu is port( 
 R1,R2 : in std_logic_vector (15 downto 0);
-imm : in std_logic_vector (15 downto 0);
+imm : in std_logic_vector (4 downto 0);
 Cin: in std_logic;
 S: in std_logic_vector (4 downto 0);
 not1,inc1,dec1,add1,mul1,sub1,and1,or1,shl1,shr1,setc,clc : in std_logic;

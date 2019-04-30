@@ -4,7 +4,7 @@ Use ieee.std_logic_1164.all;
 use IEEE.numeric_std.all;
 Entity Alu is port( 
 R1,R2 : in std_logic_vector (15 downto 0);
-imm : in std_logic_vector (15 downto 0);
+imm : in std_logic_vector (4 downto 0);
 Cin: in std_logic;
 S: in std_logic_vector (4 downto 0);
 not1,inc1,dec1,add1,mul1,sub1,and1,or1,shl1,shr1 ,setc,clc: in std_logic;
@@ -26,7 +26,7 @@ component Adder is port(
   component shift is port( 
       a : in std_logic_vector (15 downto 0);
       LorR : in std_logic;
-      imm :  integer  range 0 to 65536;
+      imm :  integer  range 0 to 16;
       enable :in  std_logic;
       Cout :out std_logic;
       F : out std_logic_vector (15 downto 0)

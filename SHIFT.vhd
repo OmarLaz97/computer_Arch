@@ -4,7 +4,7 @@ use IEEE.numeric_std.all;
 Entity shift is port( 
       a : in std_logic_vector (15 downto 0);
       LorR : in std_logic;
-      imm : in integer  range 0 to 65536;
+      imm : in integer  range 0 to 16;
       enable :in  std_logic;
       Cout :out std_logic;
       F : out std_logic_vector (15 downto 0)
