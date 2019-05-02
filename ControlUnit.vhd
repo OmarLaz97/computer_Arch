@@ -38,7 +38,7 @@ Architecture a_CU of CU is
                 Mux_MemAdressValue <= "00";
                 Mem_Write1_1address <= '0';
                 Mem_write2_2addresses <= '0';
-                Mem_Read <= '1';
+                Mem_Read <= '0';
                 Mem_Read2 <= '0';
                 Mux_MemData <= "00";
                 Reg_File_Read <= '0'; 
@@ -60,7 +60,7 @@ Architecture a_CU of CU is
             Mux_MemAdressValue <= "00";
             Mem_Write1_1address <= '0';
             Mem_write2_2addresses <= '0';
-            Mem_Read <= '1';
+            Mem_Read <= '0';
             Mem_Read2 <= '0';
             Mux_MemData <= "00";
             Reg_File_Read <= '0'; 
@@ -82,7 +82,7 @@ Architecture a_CU of CU is
             Mux_MemAdressValue <= "00";
             Mem_Write1_1address <= '0';
             Mem_write2_2addresses <= '0';
-            Mem_Read <= '1';
+            Mem_Read <= '0';
             Mem_Read2 <= '0';
             Mux_MemData <= "00";
             Reg_File_Read <= '0'; 
@@ -104,7 +104,7 @@ Architecture a_CU of CU is
             Mux_MemAdressValue <= "00";
             Mem_Write1_1address <= '0';
             Mem_write2_2addresses <= '0';
-            Mem_Read <= '1';
+            Mem_Read <= '0';
             Mem_Read2 <= '0';
             Mux_MemData <= "00";
             Reg_File_Read <= '1'; 
@@ -126,7 +126,7 @@ Architecture a_CU of CU is
             Mux_MemAdressValue <= "00";
             Mem_Write1_1address <= '0';
             Mem_write2_2addresses <= '0';
-            Mem_Read <= '1';
+            Mem_Read <= '0';
             Mem_Read2 <= '0';
             Mux_MemData <= "00";
             Reg_File_Read <= '1'; 
@@ -148,7 +148,7 @@ Architecture a_CU of CU is
             Mux_MemAdressValue <= "00";
             Mem_Write1_1address <= '0';
             Mem_write2_2addresses <= '0';
-            Mem_Read <= '1';
+            Mem_Read <= '0';
             Mem_Read2 <= '0';
             Mux_MemData <= "00";
             Reg_File_Read <= '1'; 
@@ -170,7 +170,7 @@ Architecture a_CU of CU is
             Mux_MemAdressValue <= "00";
             Mem_Write1_1address <= '0';
             Mem_write2_2addresses <= '0';
-            Mem_Read <= '1';
+            Mem_Read <= '0';
             Mem_Read2 <= '0';
             Mux_MemData <= "00";
             Reg_File_Read <= '1'; 
@@ -192,7 +192,7 @@ Architecture a_CU of CU is
             Mux_MemAdressValue <= "00";
             Mem_Write1_1address <= '0';
             Mem_write2_2addresses <= '0';
-            Mem_Read <= '1';
+            Mem_Read <= '0';
             Mem_Read2 <= '0';
             Mux_MemData <= "00";
             Reg_File_Read <= '0'; 
@@ -214,7 +214,7 @@ Architecture a_CU of CU is
             Mux_MemAdressValue <= "00";
             Mem_Write1_1address <= '0';
             Mem_write2_2addresses <= '0';
-            Mem_Read <= '1';
+            Mem_Read <= '0';
             Mem_Read2 <= '0';
             Mux_MemData <= "00";
             Reg_File_Read <= '1'; 
@@ -236,7 +236,7 @@ Architecture a_CU of CU is
             Mux_MemAdressValue <= "00";
             Mem_Write1_1address <= '0';
             Mem_write2_2addresses <= '0';
-            Mem_Read <= '1';
+            Mem_Read <= '0';
             Mem_Read2 <= '0';
             Mux_MemData <= "00";
             Reg_File_Read <= '1'; 
@@ -258,7 +258,7 @@ Architecture a_CU of CU is
             Mux_MemAdressValue <= "00";
             Mem_Write1_1address <= '0';
             Mem_write2_2addresses <= '0';
-            Mem_Read <= '1';
+            Mem_Read <= '0';
             Mem_Read2 <= '0';
             Mux_MemData <= "00";
             Reg_File_Read <= '1'; 
@@ -280,7 +280,7 @@ Architecture a_CU of CU is
             Mux_MemAdressValue <= "00";
             Mem_Write1_1address <= '0';
             Mem_write2_2addresses <= '0';
-            Mem_Read <= '1';
+            Mem_Read <= '0';
             Mem_Read2 <= '0';
             Mux_MemData <= "00";
             Reg_File_Read <= '1'; 
@@ -302,7 +302,7 @@ Architecture a_CU of CU is
             Mux_MemAdressValue <= "00";
             Mem_Write1_1address <= '0';
             Mem_write2_2addresses <= '0';
-            Mem_Read <= '1';
+            Mem_Read <= '0';
             Mem_Read2 <= '0';
             Mux_MemData <= "00";
             Reg_File_Read <= '1'; 
@@ -324,7 +324,7 @@ Architecture a_CU of CU is
             Mux_MemAdressValue <= "00";
             Mem_Write1_1address <= '0';
             Mem_write2_2addresses <= '0';
-            Mem_Read <= '1';
+            Mem_Read <= '0';
             Mem_Read2 <= '0';
             Mux_MemData <= "00";
             Reg_File_Read <= '1'; 
@@ -346,7 +346,7 @@ Architecture a_CU of CU is
             Mux_MemAdressValue <= "00";
             Mem_Write1_1address <= '0';
             Mem_write2_2addresses <= '0';
-            Mem_Read <= '1';
+            Mem_Read <= '0';
             Mem_Read2 <= '0';
             Mux_MemData <= "00";
             Reg_File_Read <= '1'; 
@@ -368,7 +368,7 @@ Architecture a_CU of CU is
             Mux_MemAdressValue <= "00";
             Mem_Write1_1address <= '0';
             Mem_write2_2addresses <= '0';
-            Mem_Read <= '1';
+            Mem_Read <= '0';
             Mem_Read2 <= '0';
             Mux_MemData <= "00";
             Reg_File_Read <= '1'; 
@@ -391,7 +391,7 @@ Architecture a_CU of CU is
             Mux_MemAdressValue <= "01";
             Mem_Write1_1address <= '1';
             Mem_write2_2addresses <= '0';
-            Mem_Read <= '1';
+            Mem_Read <= '0';
             Mem_Read2 <= '0';
             Mux_MemData <= "00";
             Reg_File_Read <= '1'; 
@@ -437,7 +437,7 @@ Architecture a_CU of CU is
             Mux_MemAdressValue <= "00";
             Mem_Write1_1address <= '0';
             Mem_write2_2addresses <= '0';
-            Mem_Read <= '1';
+            Mem_Read <= '0';
             Mem_Read2 <= '0';
             Mux_MemData <= "00";
             Reg_File_Read <= '1'; 
@@ -484,7 +484,7 @@ Architecture a_CU of CU is
             Mux_MemAdressValue <= "10";
             Mem_Write1_1address <= '1';
             Mem_write2_2addresses <= '0';
-            Mem_Read <= '1';
+            Mem_Read <= '0';
             Mem_Read2 <= '0';
             Mux_MemData <= "00";
             Reg_File_Read <= '1'; 
@@ -507,7 +507,7 @@ Architecture a_CU of CU is
             Mux_MemAdressValue <= "00";
             Mem_Write1_1address <= '0';
             Mem_write2_2addresses <= '0';
-            Mem_Read <= '1';
+            Mem_Read <= '0';
             Mem_Read2 <= '0';
             Mux_MemData <= "00";
             Reg_File_Read <= '1'; 
@@ -530,7 +530,7 @@ Architecture a_CU of CU is
             Mux_MemAdressValue <= "00";
             Mem_Write1_1address <= '0';
             Mem_write2_2addresses <= '0';
-            Mem_Read <= '1';
+            Mem_Read <= '0';
             Mem_Read2 <= '0';
             Mux_MemData <= "00";
             Reg_File_Read <= '1'; 
@@ -553,7 +553,7 @@ Architecture a_CU of CU is
             Mux_MemAdressValue <= "00";
             Mem_Write1_1address <= '0';
             Mem_write2_2addresses <= '0';
-            Mem_Read <= '1';
+            Mem_Read <= '0';
             Mem_Read2 <= '0';
             Mux_MemData <= "00";
             Reg_File_Read <= '1'; 
@@ -576,7 +576,7 @@ Architecture a_CU of CU is
             Mux_MemAdressValue <= "00";
             Mem_Write1_1address <= '0';
             Mem_write2_2addresses <= '0';
-            Mem_Read <= '1';
+            Mem_Read <= '0';
             Mem_Read2 <= '0';
             Mux_MemData <= "00";
             Reg_File_Read <= '1'; 
@@ -595,7 +595,7 @@ Architecture a_CU of CU is
 	   elsif opCode = "11001" then --call
             resetSignal <= '0';
             Mux_PcP1_Call_Jump <= '0'; 
-            Mux_Mux1_Mem <= '1';
+            Mux_Mux1_Mem <= '0';
             Mux_MemAdressValue <= "00";
             Mem_Write1_1address <= '1';   --check ma3 khaled el etnein write wala wa7da ba ely be 1
             Mem_write2_2addresses <= '1';
