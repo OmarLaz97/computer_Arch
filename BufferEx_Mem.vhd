@@ -9,6 +9,7 @@ Entity Ex_Mem is
         	Mem_Write1_1address	: in std_logic;
         	Mem_write2_2addresses   : in std_logic;
         	Mem_Read		: in std_logic;
+        	Mem_Read2		: in std_logic;
         	Mux_MemData		: in std_logic_vector(1 downto 0);
         	Multiply_Sig		: in std_logic;
      	        WB_DeMux		: in std_logic;
@@ -21,6 +22,7 @@ Entity Ex_Mem is
        		Mem_Write1_1address_Out : out std_logic;
       		Mem_write2_2addresses_Out: out std_logic;
        		Mem_Read_Out		: out std_logic;
+       		Mem_Read2_Out		: out std_logic;
      		Mux_MemData_Out		: out std_logic_vector(1 downto 0);
        		Multiply_Sig_Out: out std_logic;
         	WB_DeMux_Out: out std_logic;
@@ -36,7 +38,9 @@ Entity Ex_Mem is
         	PC: in std_logic_vector(31 downto 0);
 	        PC_Pl: in std_logic_vector(31 downto 0);
 		PC_Out: out std_logic_vector(31 downto 0);
-	        PC_Pl_Out: out std_logic_vector(31 downto 0)
+	        PC_Pl_Out: out std_logic_vector(31 downto 0);
+		INPORT_IN: in std_logic_vector(15 downto 0);
+		INPORT_OUT: out std_logic_vector(15 downto 0)
 
 );
 end Ex_Mem;
@@ -65,6 +69,7 @@ signal regEn : std_logic;
   Mem_Write1_1address_U: DEbit_dff port map (Clk,regEn,resetSignal,Mem_Write1_1address,Mem_Write1_1address_Out);
   Mem_write2_2addresses_U: DEbit_dff port map (Clk,regEn,resetSignal,Mem_write2_2addresses,Mem_write2_2addresses_Out);
   Mem_Read_U: DEbit_dff port map (Clk,regEn,resetSignal,Mem_Read,Mem_Read_Out);
+  Mem_Read2_U: DEbit_dff port map (Clk,regEn,resetSignal,Mem_Read2,Mem_Read2_Out);
   Mux_MemData_U: my_DEnDFF generic map (n=>2) port map (Clk,regEn,resetSignal,Mux_MemData,Mux_MemData_Out);
   Multiply_Sig_U: DEbit_dff port map (Clk,regEn,resetSignal,Multiply_Sig,Multiply_Sig_Out);
   WB_DeMux_U: DEbit_dff port map (Clk,regEn,resetSignal,WB_DeMux,WB_DeMux_Out);
@@ -75,5 +80,6 @@ signal regEn : std_logic;
   Stack_Ptr_U: my_DEnDFF generic map (n=>32) port map (Clk,regEn,resetSignal,Stack_Ptr,Stack_Ptr_Out);
   PC_U: my_DEnDFF generic map (n=>32) port map (Clk,regEn,resetSignal,PC,PC_Out);
   PC_P1_U: my_DEnDFF generic map (n=>32) port map (Clk,regEn,resetSignal,PC_Pl,PC_Pl_Out);
+  INPort: my_DEnDFF generic map (n=>16) port map (Clk,regEn,resetSignal,INPORT_IN,INPORT_OUT);
  
 end My_Ex_Mem;

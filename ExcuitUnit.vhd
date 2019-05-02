@@ -32,5 +32,7 @@ signal nflag,zflag,cflag : std_logic;
 begin
 alufunctionalunit :ALUUnit port map (R1,R2,imm,S,Cin,Clk,Output,Output2,nflag,zflag,cflag);
 flags :my_FR port map (Clk,enable,Rst,zflag,cflag,nflag,Z,N,Cout);
+
+
  
 end architecture;

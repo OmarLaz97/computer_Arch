@@ -10,7 +10,6 @@ datain1,datain2: in std_logic_vector(15 downto 0);
 
 Rsrc:in std_logic_vector(15 downto 0);
 dataout1,dataout2: inout std_logic_vector(15 downto 0);
-PCWrite: in std_logic;
 FetchIn1: in std_logic_vector(31 downto 0);
 Mux1: in std_logic;
 W_reg1:in  std_logic_vector (2 downto 0);
@@ -32,6 +31,13 @@ COMPONENT Mux4x2 IS
 		      IN1,IN2, IN3, IN4	:  IN  std_logic_vector (n-1 downto 0);
   		      OUT1      :  OUT std_logic_vector (n-1 downto 0));    
 END COMPONENT;
+
+component Mux2x1 IS  Generic ( n : integer := 16); 
+		PORT (SEl	:  IN  std_logic;
+		      IN1,IN2	:  IN  std_logic_vector (n-1 downto 0);
+  		      OUT1      :  OUT std_logic_vector (n-1 downto 0));    
+END component Mux2x1;
+
 
 
 
@@ -73,7 +79,9 @@ Port (
 
         Instr_Out: out std_logic_vector(15 downto 0);
         PC_Out: out std_logic_vector(31 downto 0);
-        PC_Pl_Out: out std_logic_vector(31 downto 0)
+        PC_Pl_Out: out std_logic_vector(31 downto 0);
+	INPORT_IN: in std_logic_vector(15 downto 0);
+	INPORT_OUT: out std_logic_vector(15 downto 0)
      );
 End component;
 
@@ -91,6 +99,7 @@ component CU is
         Mem_Write1_1address: out std_logic;
         Mem_write2_2addresses: out std_logic;
         Mem_Read: out std_logic;
+        Mem_Read2: out std_logic; 
         Mux_MemData: out std_logic_vector(1 downto 0);
         Reg_File_Read: out std_logic;
         Multiply_Sig: out std_logic;
@@ -130,6 +139,7 @@ component ID_EX is
         Mem_Write1_1address: in std_logic;
         Mem_write2_2addresses: in std_logic;
         Mem_Read: in std_logic;
+        Mem_Read2: in std_logic;
         Mux_MemData: in std_logic_vector(1 downto 0);
         Reg_File_Read: in std_logic;
         
@@ -154,6 +164,7 @@ component ID_EX is
         Mem_Write1_1address_Out: out std_logic;
         Mem_write2_2addresses_Out: out std_logic;
         Mem_Read_Out: out std_logic;
+        Mem_Read2_Out: out std_logic;
         Mux_MemData_Out: out std_logic_vector(1 downto 0);
         Reg_File_Read_Out: out std_logic;
         Multiply_Sig_Out: out std_logic;
@@ -176,7 +187,9 @@ component ID_EX is
 	PC_Out: out std_logic_vector(31 downto 0);
         PC_Pl_Out: out std_logic_vector(31 downto 0);
 	Shift_Value : in std_logic_vector (4 downto 0);
-	Shift_Value_out : out std_logic_Vector (4 downto 0)
+	Shift_Value_out : out std_logic_Vector (4 downto 0);
+	INPORT_IN: in std_logic_vector(15 downto 0);
+	INPORT_OUT: out std_logic_vector(15 downto 0)
      );
 end component;
 
@@ -188,6 +201,7 @@ component Ex_Mem is
         	Mem_Write1_1address	: in std_logic;
         	Mem_write2_2addresses   : in std_logic;
         	Mem_Read		: in std_logic;
+        	Mem_Read2		: in std_logic;
         	Mux_MemData		: in std_logic_vector(1 downto 0);
         	Multiply_Sig		: in std_logic;
      	        WB_DeMux		: in std_logic;
@@ -200,6 +214,7 @@ component Ex_Mem is
        		Mem_Write1_1address_Out : out std_logic;
       		Mem_write2_2addresses_Out: out std_logic;
        		Mem_Read_Out		: out std_logic;
+       		Mem_Read2_Out		: out std_logic;
      		Mux_MemData_Out		: out std_logic_vector(1 downto 0);
        		Multiply_Sig_Out: out std_logic;
         	WB_DeMux_Out: out std_logic;
@@ -215,7 +230,9 @@ component Ex_Mem is
                 PC: in std_logic_vector(31 downto 0);
                 PC_Pl: in std_logic_vector(31 downto 0);
 	        PC_Out: out std_logic_vector(31 downto 0);
-                PC_Pl_Out: out std_logic_vector(31 downto 0)
+                PC_Pl_Out: out std_logic_vector(31 downto 0);
+		INPORT_IN: in std_logic_vector(15 downto 0);
+		INPORT_OUT: out std_logic_vector(15 downto 0)
 
 );
 end component;
@@ -229,8 +246,21 @@ Output : out std_logic_vector (15 downto 0);
 Output2 : out std_logic_vector (15 downto 0);
 N,Z,Cout : out std_logic
 );
+
 end component;
 
+component HDU IS PORT (
+Reset : in std_logic;
+Mem_Read_ID_EX  :in std_logic; --to detect load use case--
+Mem_Read_EX_MEM :in std_logic; --to stall in case of using memory
+Mem_Write_1_EX_MEM :in std_logic; --to stall in case of using memory
+Mem_Write_2_EX_MEM :in std_logic; --to stall in case of using memory
+Rsrc,Rdst,RW1 :in std_logic_vector (2 downto 0);
+Pc_W,IF_ID_W :out std_logic;
+Stall:out std_logic 
+);
+
+END component HDU;
 
 
 signal Mux1Output: std_logic_vector(31 downto 0);
@@ -249,6 +279,7 @@ signal Mux_MemAdressValue: std_logic_vector (1 downto 0);
 signal Mem_Write1_1address:  std_logic;
 signal Mem_write2_2addresses:  std_logic;
 signal Mem_Read: std_logic;
+signal Mem_Read2: std_logic;
 signal Mux_MemData:  std_logic_vector(1 downto 0);
 signal Reg_File_Read:  std_logic;
 signal Multiply_Sig:  std_logic;
@@ -328,6 +359,16 @@ signal PC_Pl_DE:  std_logic_vector(31 downto 0);
 signal PC_Out_EXME:  std_logic_vector(31 downto 0);
 signal PC_Pl_Out_EXME:  std_logic_vector(31 downto 0);
 signal immShiftin : std_logic_vector (4 downto 0);
+signal js,Mux1Selector :std_logic;
+signal INPORTIN_IF_ID,INPORTOUT_IF_ID,INPORTOUT_ID_IE,INPORTOUT_IE_IM: std_logic_vector(15 downto 0);
+signal Mem_read2_ID_EX,Mem_read2_EX_Mem :std_logic;
+signal PCWrite :  std_logic;
+signal fitch_decode_W :std_logic;
+signal stall :std_logic;
+signal stallout: std_logic;
+signal id_EXRESET :std_logic;
+
+
 
 begin
 
@@ -335,34 +376,48 @@ begin
 
 Memout<=("0000000000000000" & dataout1 );
 EAIN<=("000000000000"&EA);
-Mux11:Mux4x2 GENERIC MAP(32) PORT MAP(Mux_MemAdressValue,PCout,SP,EAIN,(Others =>'0'),Mux1Output);
-Mux22:Mux4x2 GENERIC MAP(16) PORT MAP(Mux_MemData,Rsrc,PCout(31 downto 16),PCPlusOne(31 downto 16),(Others =>'0'),Mux2Output);
-Mux33:Mux4x2 GENERIC MAP(16) PORT MAP(Mux_MemData,(Others =>'0'),PCout(15 downto 0),PCPlusOne(15 downto 0),(Others =>'0'),Mux3Output);
+
+Mux11:Mux4x2 GENERIC MAP(32) PORT MAP(Mux_MemAdressValue_Out_EXME,PCout,Stack_Ptr_Out_EXME,Eff_Addr_Out_EXME,(Others =>'0'),Mux1Output);
+Mux22:Mux4x2 GENERIC MAP(16) PORT MAP(Mux_MemData_Out_EXME,Rsource_out_EXME,PC_Out_EXME(31 downto 16),PC_Pl_Out_EXME(31 downto 16),(Others =>'0'),Mux2Output);
+Mux33:Mux4x2 GENERIC MAP(16) PORT MAP(Mux_MemData_Out_EXME,(Others =>'0'),PC_Out_EXME(15 downto 0),PC_Pl_Out_EXME(15 downto 0),(Others =>'0'),Mux3Output);
 
 
 Fetch1:Fetch PORT MAP(FetchIn1,Memout,PCWrite,Int,Clk,Reset,Mux1,Mux_Mux1_Mem,PCout,PCPlusOne);
-Memory1:Memory PORT MAP(Clk,Mem_Write1_1address,Mem_write2_2addresses,Mem_Read,R2,Reset,Int,Mux1Output,Mux2Output,Mux3Output,dataout1,dataout2);
-fetchdecode:IF_ID PORT MAP (Clk,Reset,'1',dataout1,PCout,PCPlusOne,Instr_Out,PC_Out,PC_Pl_Out);
+Memory1:Memory PORT MAP(Clk,Mem_Write1_1address_Out_EXME,Mem_write2_2addresses_Out_EXME,Mem_Read,Mem_Read2,Reset,Int,Mux1Output,Mux2Output,Mux3Output,dataout1,dataout2);
+fetchdecode:IF_ID PORT MAP (Clk,Reset,fitch_decode_W,dataout1,PCout,PCPlusOne,Instr_Out,PC_Out,PC_Pl_Out,INPORTIN_IF_ID,INPORTOUT_IF_ID);
 --fetch done--
 opCode <= Instr_Out(15 downto 11);
 Rsrc1<= Instr_Out(10 downto 8);
 Rsrc2<= Instr_Out(7 downto 5);
 ImmShift<=Instr_Out (7 downto 3);
-controlUnit:CU PORT MAP (Clk,opCode,Reset,resetSignal,Mux_PcP1_Call_Jump,Mux_Mux1_Mem,Mux_MemAdressValue,Mem_Write1_1address,Mem_write2_2addresses,Mem_Read,Mux_MemData,Reg_File_Read,Multiply_Sig,Stack_Write,Mux_Stack,ALU_OP,Flag_Write,Jump_Signal,Call_Sig,WB_DeMux,WB_Mux,WB_Sig);
+controlUnit:CU PORT MAP (Clk,opCode,Reset,resetSignal,Mux_PcP1_Call_Jump,Mux_Mux1_Mem,Mux_MemAdressValue,Mem_Write1_1address,Mem_write2_2addresses,Mem_Read,Mem_Read2,Mux_MemData,Reg_File_Read,Multiply_Sig,Stack_Write,Mux_Stack,ALU_OP,Flag_Write,Jump_Signal,Call_Sig,WB_DeMux,WB_Mux,WB_Sig);
 
 
 RegFile :Reg_file PORT MAP(Clk,Reset,Rsrc1,Rsrc2,W_reg1,W_reg2,W_data1,W_data2,MultSig,wbSig,R_data1,R_data2 );
-IDEXBUFF :  ID_EX PORT MAP(Clk,Reset,Mux_MemAdressValue,Mem_Write1_1address,Mem_write2_2addresses,Mem_Read,Mux_MemData,Reg_File_Read,Multiply_Sig,ALU_OP,Flag_Write,Jump_Signal,Call_Sig,WB_DeMux,WB_Mux,WB_Sig,R_data1,R_data2,Rsrc1,Rsrc2,imm,EA,SP,
-Mux_MemAdressValue_Out,Mem_Write1_1address_Out,Mem_write2_2addresses_Out,Mem_Read_Out, Mux_MemData_Out,Reg_File_Read_Out,Multiply_Sig_Out,ALU_OP_Out
+
+HazardDetectionUnit :HDU PORT MAP(Reset,Mem_Read_Out,Mem_Read_Out_EXME,Mem_Write1_1address_Out_EXME,Mem_write2_2addresses_Out_EXME,Rsrc1,Rsrc2,RSrc_Address_Out,PCWrite,fitch_decode_W,stall);
+
+stalling: Mux2x1 generic map (n=>1 )PORT MAP (stall,"0","1",stallout);
+id_EXRESET <=Reset or stallout;
+IDEXBUFF :  ID_EX PORT MAP(Clk,id_EXRESET,Mux_MemAdressValue,Mem_Write1_1address,Mem_write2_2addresses,Mem_Read,Mem_Read2,Mux_MemData,Reg_File_Read,Multiply_Sig,ALU_OP,Flag_Write,Jump_Signal,Call_Sig,WB_DeMux,WB_Mux,WB_Sig,R_data1,R_data2,Rsrc1,Rsrc2,imm,EA,SP,
+Mux_MemAdressValue_Out,Mem_Write1_1address_Out,Mem_write2_2addresses_Out,Mem_Read_Out,Mem_read2_ID_EX, Mux_MemData_Out,Reg_File_Read_Out,Multiply_Sig_Out,ALU_OP_Out
 ,Flag_Write_Out,Jump_Signal_Out,Call_Sig_Out,WB_DeMux_Out,WB_Mux_Out,WB_Sig_Out,RSrc_Out,RDest_Out,RSrc_Address_Out,RDest_Address_Out,Imm_Val_Out,Eff_Addr_Out,Stack_Ptr_Out,
-PC_Out,PC_Pl_Out,PC_DE,PC_Pl_DE,immShiftin,ImmShift);
+PC_Out,PC_Pl_Out,PC_DE,PC_Pl_DE,immShiftin,ImmShift,INPORTOUT_IF_ID,INPORTOUT_ID_IE);
 
 
 ExcuitUnit1: EXUnit PORT MAP (RSrc_Out,RDest_Out,ImmShift,ALU_OP_Out,'0',Clk,Flag_Write_Out,Reset,ALuOutput1,ALuOutput2,N,Z,Cout);
 
-ExcuitMemBuff :  Ex_Mem PORT MAP (Clk,Reset,ALuOutput1,ALuOutput2,RSrc_Address_Out,RDest_Address_Out,Mux_MemAdressValue_Out,Mem_Write1_1address_Out,Mem_write2_2addresses_Out,Mem_Read_Out, Mux_MemData_Out,Multiply_Sig_Out,WB_DeMux_Out,WB_Mux_Out,WB_Sig_Out,Imm_Val_Out,Eff_Addr_Out,Stack_Ptr_Out,
-Mux_MemAdressValue_Out_EXME,Mem_Write1_1address_Out_EXME,Mem_write2_2addresses_Out_EXME,Mem_Read_Out_EXME,Mux_MemData_Out_EXME,Multiply_Sig_Out_EXME,WB_DeMux_Out_EXME
+with ALU_OP_Out select 
+js<=(Jump_Signal_Out and Z) when "10101",
+(Jump_Signal_Out and N) when "10110",
+(Jump_Signal_Out and Cout) when "10111",
+(Jump_Signal_Out and '1') when "11000",
+'0' when others;
+
+
+ExcuitMemBuff :  Ex_Mem PORT MAP (Clk,Reset,ALuOutput1,ALuOutput2,RSrc_Address_Out,RDest_Address_Out,Mux_MemAdressValue_Out,Mem_Write1_1address_Out,Mem_write2_2addresses_Out,Mem_Read_Out,Mem_read2_ID_EX, Mux_MemData_Out,Multiply_Sig_Out,WB_DeMux_Out,WB_Mux_Out,WB_Sig_Out,Imm_Val_Out,Eff_Addr_Out,Stack_Ptr_Out,
+Mux_MemAdressValue_Out_EXME,Mem_Write1_1address_Out_EXME,Mem_write2_2addresses_Out_EXME,Mem_Read_Out_EXME,Mem_read2_EX_Mem,Mux_MemData_Out_EXME,Multiply_Sig_Out_EXME,WB_DeMux_Out_EXME
 ,WB_Mux_Out_EXME,WB_Sig_Out_EXME,Imm_Val_Out_EXME,Eff_Addr_Out_EXME,Stack_Ptr_Out_EXME,ALU1_out_EXME,ALU2_out_EXME,Rsource_out_EXME,Rdest_out_EXME
-,PC_DE,PC_Pl_DE,PC_Out_EXME,PC_Pl_Out_EXME);
+,PC_DE,PC_Pl_DE,PC_Out_EXME,PC_Pl_Out_EXME,INPORTOUT_ID_IE,INPORTOUT_IE_IM);
 
 end architecture;
