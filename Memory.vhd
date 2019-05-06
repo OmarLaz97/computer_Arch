@@ -27,9 +27,8 @@ begin
 	begin 
 		if Reset='1' and falling_edge(clk)  then
 			dataout1<=Memory(0);
-		else 
 
-		if clk'event and rising_edge(clk) then
+		elsif Reset='0' and rising_edge(clk) then
 
 
 			
@@ -56,7 +55,6 @@ begin
 
 				end if;				
 
-			end if;
-		end if;
+					end if;
 	end process;
 end architecture;

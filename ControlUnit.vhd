@@ -1,7 +1,7 @@
 Library ieee; 
 Use ieee.std_logic_1164.all;
 
-Entity CU is 
+Entity CUnit is 
   port( clk: in std_logic;
         opCode : in std_logic_vector(4 downto 0); 
 	resetSignalin : in std_logic;
@@ -25,9 +25,9 @@ Entity CU is
         WB_DeMux: out std_logic;
         WB_Mux: out std_logic_vector(1 downto 0);
         WB_Sig: out std_logic); 
-end CU;
+end CUnit;
 
-Architecture a_CU of CU is
+Architecture a_CU of CUnit is
     begin
         process(clk,resetSignalin) 
         begin

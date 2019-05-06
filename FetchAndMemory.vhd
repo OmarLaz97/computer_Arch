@@ -54,6 +54,12 @@ dataout1,dataout2: out std_logic_vector(m-1 downto 0)
 ) ;
 end component Memory;
 
+component SP is port(
+Clk,Rst,En: in std_logic;
+SEL: in std_logic_vector(1 downto 0);
+SP: out std_logic_vector(31 downto 0));
+end component;
+
 component Fetch is
 port(
 FetchIn1: in std_logic_vector(31 downto 0);
@@ -86,7 +92,7 @@ Port (
 End component;
 
 
-component CU is 
+component CUnit is 
   port(  
 
         clk: in std_logic;
@@ -335,7 +341,7 @@ signal   Eff_Addr_Out:  std_logic_vector(19 downto 0);
 signal   Stack_Ptr_Out:  std_logic_vector(31 downto 0);
 
 signal   imm : std_logic_vector (15 downto 0);
-signal   SP :  std_logic_vector (31 downto 0);
+--signal   SP :  std_logic_vector (31 downto 0);
 signal   EA :std_logic_vector (19 downto 0);
 signal EAIN:std_logic_vector (31 downto 0);
 signal ImmShift : std_logic_vector (4 downto 0);
@@ -375,7 +381,7 @@ signal stall :std_logic;
 signal stallout: std_logic;
 signal id_EXRESET :std_logic;
 
-
+signal SP_OUT :std_logic_vector(31 downto 0);
 
 begin
 
@@ -384,7 +390,7 @@ begin
 Memout<=("0000000000000000" & dataout1 );
 EAIN<=("000000000000"&Eff_Addr_Out_EXME);
 
-Mux11:Mux4x2 GENERIC MAP(32) PORT MAP(Mux_MemAdressValue_Out_EXME,PCout,Stack_Ptr_Out_EXME,EAIN,(Others =>'0'),Mux1Output);
+Mux11:Mux4x2 GENERIC MAP(32) PORT MAP(Mux_MemAdressValue_Out,PCout,Stack_Ptr_Out_EXME,EAIN,(Others =>'0'),Mux1Output);
 Mux22:Mux4x2 GENERIC MAP(16) PORT MAP(Mux_MemData_Out_EXME,ALU1_out_EXME,PC_Out_EXME(31 downto 16),PC_Pl_Out_EXME(31 downto 16),(Others =>'0'),Mux2Output);
 Mux33:Mux4x2 GENERIC MAP(16) PORT MAP(Mux_MemData_Out_EXME,(Others =>'0'),PC_Out_EXME(15 downto 0),PC_Pl_Out_EXME(15 downto 0),(Others =>'0'),Mux3Output);
 
@@ -397,16 +403,16 @@ opCode <= Instr_Out(15 downto 11);
 Rsrc1<= Instr_Out(10 downto 8);
 Rsrc2<= Instr_Out(7 downto 5);
 ImmShift<=Instr_Out (7 downto 3);
-controlUnit:CU PORT MAP (Clk,opCode,Reset,resetSignal,Mux_PcP1_Call_Jump,Mux_Mux1_Mem,Mux_MemAdressValue,Mem_Write1_1address,Mem_write2_2addresses,Mem_Read,Mem_Read2,Mux_MemData,Reg_File_Read,Multiply_Sig,Stack_Write,Mux_Stack,ALU_OP,Flag_Write,Jump_Signal,Call_Sig,WB_DeMux,WB_Mux,WB_Sig);
+controlUnit:CUnit PORT MAP (Clk,opCode,Reset,resetSignal,Mux_PcP1_Call_Jump,Mux_Mux1_Mem,Mux_MemAdressValue,Mem_Write1_1address,Mem_write2_2addresses,Mem_Read,Mem_Read2,Mux_MemData,Reg_File_Read,Multiply_Sig,Stack_Write,Mux_Stack,ALU_OP,Flag_Write,Jump_Signal,Call_Sig,WB_DeMux,WB_Mux,WB_Sig);
 
 
 RegFile :Reg_file PORT MAP(Clk,Reset,Rsrc1,Rsrc2,W_reg1,W_reg2,W_data1,W_data2,MultSig,wbSig,R_data1,R_data2 );
-
+stackpointer : SP PORT MAP(Clk,Reset,Stack_Write,Mux_Stack,SP_OUT);
 HazardDetectionUnit :HDU PORT MAP(Reset,Mem_Read_Out,Mem_Read_Out_EXME,Mem_Write1_1address_Out_EXME,Mem_write2_2addresses_Out_EXME,Rsrc1,Rsrc2,RSrc_Address_Out,PCWrite,fitch_decode_W,stall);
 
 stalling: Mux2x1bit PORT MAP (stall,'0','1',stallout);---std_logic_vector
 id_EXRESET <=Reset or stallout;
-IDEXBUFF :  ID_EX PORT MAP(Clk,id_EXRESET,Mux_MemAdressValue,Mem_Write1_1address,Mem_write2_2addresses,Mem_Read,Mem_Read2,Mux_MemData,Reg_File_Read,Multiply_Sig,ALU_OP,Flag_Write,Jump_Signal,Call_Sig,WB_DeMux,WB_Mux,WB_Sig,R_data1,R_data2,Rsrc1,Rsrc2,imm,EA,SP,
+IDEXBUFF :  ID_EX PORT MAP(Clk,id_EXRESET,Mux_MemAdressValue,Mem_Write1_1address,Mem_write2_2addresses,Mem_Read,Mem_Read2,Mux_MemData,Reg_File_Read,Multiply_Sig,ALU_OP,Flag_Write,Jump_Signal,Call_Sig,WB_DeMux,WB_Mux,WB_Sig,R_data1,R_data2,Rsrc1,Rsrc2,imm,EA,SP_OUT,
 Mux_MemAdressValue_Out,Mem_Write1_1address_Out,Mem_write2_2addresses_Out,Mem_Read_Out,Mem_read2_ID_EX, Mux_MemData_Out,Reg_File_Read_Out,Multiply_Sig_Out,ALU_OP_Out
 ,Flag_Write_Out,Jump_Signal_Out,Call_Sig_Out,WB_DeMux_Out,WB_Mux_Out,WB_Sig_Out,RSrc_Out,RDest_Out,RSrc_Address_Out,RDest_Address_Out,Imm_Val_Out,Eff_Addr_Out,Stack_Ptr_Out,
 PC_Out,PC_Pl_Out,PC_DE,PC_Pl_DE,immShiftin,ImmShift,INPORTOUT_IF_ID,INPORTOUT_ID_IE);
