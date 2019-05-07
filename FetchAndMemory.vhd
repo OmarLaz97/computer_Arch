@@ -6,18 +6,12 @@ entity FetchMemory is
 port(
 R2: in std_logic;
 Clk,Reset,Int: in std_logic;
-datain1,datain2: in std_logic_vector(15 downto 0);
+datain1,datain2: in std_logic_vector(15 donto 0);
 
 Rsrc:in std_logic_vector(15 downto 0);
 dataout1,dataout2: inout std_logic_vector(15 downto 0);
 FetchIn1: in std_logic_vector(31 downto 0);
-Mux1: in std_logic;
-W_reg1:in  std_logic_vector (2 downto 0);
-W_reg2:in  std_logic_vector (2 downto 0);
-W_data1:in std_logic_vector (15 downto 0);
-W_data2:in std_logic_vector (15 downto 0);
-MultSig: in std_logic;
-wbSig:  in std_logic
+Mux1: in std_logic
 
 );
 end entity;
@@ -199,6 +193,31 @@ component ID_EX is
      );
 end component;
 
+component Mem_Wb is 
+  	port(   Clk,resetSignal		: in std_logic; 
+        	ALU1_in, ALU2_in,Memout : in std_logic_vector(15 downto 0);
+		Rsource_in, Rdest_in 	: in std_logic_vector(2 downto 0);
+        	Multiply_Sig		: in std_logic;
+     	        WB_DeMux		: in std_logic;
+     	        WB_Mux			: in std_logic_vector(1 downto 0);
+        	WB_Sig			: in std_logic;
+        	Imm_Val			: in std_logic_vector(15 downto 0);
+       		Multiply_Sig_Out: out std_logic;
+        	WB_DeMux_Out: out std_logic;
+        	WB_Mux_Out: out std_logic_vector(1 downto 0);
+        	WB_Sig_Out: out std_logic;
+        	Imm_Val_Out: out std_logic_vector(15 downto 0);
+		ALU1_out  : out std_logic_vector (15 downto 0);
+		ALU2_out  : out std_logic_vector (15 downto 0);
+		Rsource_out : out std_logic_vector (2 downto 0);
+		Rdest_out : out std_logic_vector (2 downto 0);
+		Memout_mem : out std_logic_vector(15 downto 0);
+		INPORT_IN: in std_logic_vector(15 downto 0);
+		INPORT_OUT: out std_logic_vector(15 downto 0)
+
+);
+end component;
+
 component Ex_Mem is 
   	port(   Clk,resetSignal		: in std_logic; 
         	ALU1_in, ALU2_in 	: in std_logic_vector(15 downto 0);
@@ -241,6 +260,15 @@ component Ex_Mem is
 		INPORT_OUT: out std_logic_vector(15 downto 0)
 
 );
+end component;
+
+component Wb_unit is 
+  	port(   ALU1_in,  Mem_in, ImmVal 	: in std_logic_vector(15 downto 0);
+		In_port					: in std_logic_vector (15 downto 0);
+		Sel_1					: in std_logic;
+		Sel_2					: in std_logic_vector (1 downto 0); 	
+        	RWr1 				: out std_logic_vector(15 downto 0);
+		Out1	 				: out std_logic_vector(15 downto 0));
 end component;
 
 component EXUnit is port( 
@@ -382,7 +410,20 @@ signal stallout: std_logic;
 signal id_EXRESET :std_logic;
 
 signal SP_OUT :std_logic_vector(31 downto 0);
+signal WB_DeMux_Out_mem:  std_logic;
+signal WB_Mux_Out_mem:  std_logic_vector(1 downto 0);
+signal Imm_Val_Out_mem:  std_logic_vector(15 downto 0);
+signal ALU1_out_mem  :  std_logic_vector (15 downto 0);
+signal Memout_memwbbuff :  std_logic_vector(15 downto 0);
+signal INPORT_OUT_mem:  std_logic_vector(15 downto 0);
+signal Out1:  std_logic_vector(15 downto 0);
 
+signal W_reg1:  std_logic_vector (2 downto 0);
+signal W_reg2:  std_logic_vector (2 downto 0);
+signal W_data1: std_logic_vector (15 downto 0);
+signal W_data2: std_logic_vector (15 downto 0);
+signal MultSig: std_logic;
+signal wbSig:   std_logic;
 begin
 
 
@@ -433,4 +474,11 @@ Mux_MemAdressValue_Out_EXME,Mem_Write1_1address_Out_EXME,Mem_write2_2addresses_O
 ,WB_Mux_Out_EXME,WB_Sig_Out_EXME,Imm_Val_Out_EXME,Eff_Addr_Out_EXME,Stack_Ptr_Out_EXME,ALU1_out_EXME,ALU2_out_EXME,Rsource_out_EXME,Rdest_out_EXME
 ,PC_DE,PC_Pl_DE,PC_Out_EXME,PC_Pl_Out_EXME,INPORTOUT_ID_IE,INPORTOUT_IE_IM);
 
+
+memwbbuffer :Mem_Wb  PORT MAP(Clk,Reset,ALU1_out_EXME,ALU2_out_EXME,dataout1,Rsource_out_EXME,Rdest_out_EXME,Multiply_Sig_Out_EXME
+     	  ,WB_DeMux_Out_EXME,WB_Mux_Out_EXME,WB_Sig_Out_EXME
+,Imm_Val_Out_EXME,MultSig,WB_DeMux_Out_mem,WB_Mux_Out_mem,wbSig,Imm_Val_Out_mem,ALU1_out_mem,W_data2,W_reg1,W_reg2,Memout_memwbbuff ,INPORTOUT_IE_IM,INPORT_OUT_mem);
+
+writeback: Wb_unit PORT MAP (ALU1_out_mem, Memout_memwbbuff,Imm_Val_Out_mem,INPORT_OUT_mem,WB_DeMux_Out_mem,WB_Mux_Out_mem
+,W_data1,Out1);
 end architecture;
