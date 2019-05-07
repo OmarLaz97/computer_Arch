@@ -6,7 +6,7 @@ entity FetchMemory is
 port(
 R2: in std_logic;
 Clk,Reset,Int: in std_logic;
-datain1,datain2: in std_logic_vector(15 donto 0);
+datain1,datain2: in std_logic_vector(15 downto 0);
 
 Rsrc:in std_logic_vector(15 downto 0);
 dataout1,dataout2: inout std_logic_vector(15 downto 0);
