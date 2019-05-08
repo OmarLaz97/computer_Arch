@@ -116,5 +116,6 @@ signal regEn : std_logic;
     Shift: my_DEnDFF generic map (n=>5) port map (Clk,regEn,resetSignal,Shift_Value,Shift_Value_out);
     INPort: my_DEnDFF generic map (n=>16) port map (Clk,regEn,resetSignal,INPORT_IN,INPORT_OUT);
     oneop: DEbit_dff port map (Clk,regEn,resetSignal,one_op,one_op_out);
+    
    
 end My_ID_EX;

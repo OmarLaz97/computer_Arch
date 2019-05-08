@@ -1,6 +1,6 @@
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
+LIBRARY IEEE;
+USE IEEE.STD_LOGIC_1164.ALL;
+USE IEEE.numeric_std.all;
 
 
 entity Memory is 
@@ -23,12 +23,11 @@ type Memory_type is array (0 to (2**n)-1) of std_logic_vector(m-1 downto 0);
 signal Memory : Memory_type;
  
 begin 
-	process(clk) is
+	process(clk,address,We1,We2) is
 	begin 
-		if Reset='1' and falling_edge(clk)  then
-			dataout1<=Memory(0);
+		
 
-		elsif Reset='0' and rising_edge(clk) then
+		if Reset='0' and rising_edge(clk) then
 
 
 			
@@ -42,19 +41,19 @@ begin
 				elsif We1='1' and We2='0' then 
 					Memory(to_integer(unsigned(address(19 downto 0)))) <= datain1;
 				end if;
+end if;
 
-				if Re1='1' and Re2='1' then 
-				dataout1<=Memory(to_integer(unsigned(address(19 downto 0))));
 				
-					if to_integer(unsigned(address))<=((2**n)-2) then
-					dataout2<=Memory(to_integer(unsigned(address(19 downto 0))+1));
-					end if;
-
-				elsif Re1='1' and Re2='0' then 
-					dataout1<=Memory(to_integer(unsigned(address(19 downto 0))));
-
-				end if;				
-
-					end if;
 	end process;
+
+dataout1<=Memory(to_integer(unsigned(address(19 downto 0)))) when Re1='1' and  Re2='1' and Reset='0' else
+Memory(to_integer(unsigned(address(19 downto 0))))when Re1='1' and  Re2='0' and Reset='0'else
+Memory(0) when Reset='1' else 
+(others=> 'Z');
+				
+				
+dataout2<=Memory(to_integer(unsigned(address(19 downto 0))+1)) when Re1='1' and  Re2='1' and Reset='0'else
+(others=> 'Z');								
+
+									
 end architecture;

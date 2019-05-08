@@ -7,10 +7,12 @@ Port (
         resetSignal: in std_logic;
 	regEn: in std_logic; 
         Instr: in std_logic_vector(15 downto 0);
+ 	Instr2: in std_logic_vector(15 downto 0);
         PC: in std_logic_vector(31 downto 0);
         PC_Pl: in std_logic_vector(31 downto 0);
 
         Instr_Out: out std_logic_vector(15 downto 0);
+        Instr2_Out: out std_logic_vector(15 downto 0);
         PC_Out: out std_logic_vector(31 downto 0);
         PC_Pl_Out: out std_logic_vector(31 downto 0);
 	INPORT_IN: in std_logic_vector(15 downto 0);
@@ -30,6 +32,7 @@ end component;
 
 Begin
     Instr_U: my_DEnDFF generic map (n=>16) port map (Clk,regEn,resetSignal,Instr,Instr_Out);
+    Instr2_U: my_DEnDFF generic map (n=>16) port map (Clk,regEn,resetSignal,Instr2,Instr2_Out);
     PC_U: my_DEnDFF generic map (n=>32) port map (Clk,regEn,resetSignal,PC,PC_Out);
     PC_P1_U: my_DEnDFF generic map (n=>32) port map (Clk,regEn,resetSignal,PC_Pl,PC_Pl_Out);
     INPort: my_DEnDFF generic map (n=>16) port map (Clk,regEn,resetSignal,INPORT_IN,INPORT_OUT);

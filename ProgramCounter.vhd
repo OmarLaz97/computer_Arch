@@ -19,7 +19,7 @@ begin
 	process(clk)
 		variable C: integer;
 	begin
-		if falling_edge(clk) then
+		if rising_edge(clk) then
 			if PCwrite='1' then
 				PCoutput<=PCinput;
 				C:=to_integer(unsigned(PCinput));
