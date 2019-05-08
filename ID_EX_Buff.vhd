@@ -63,7 +63,9 @@ Entity ID_EX is
 	Shift_Value : in std_logic_vector (4 downto 0);
 	Shift_Value_out : out std_logic_Vector (4 downto 0);
 	INPORT_IN: in std_logic_vector(15 downto 0);
-	INPORT_OUT: out std_logic_vector(15 downto 0)
+	INPORT_OUT: out std_logic_vector(15 downto 0);
+ 	one_op: in std_logic;
+ 	one_op_out: out std_logic
      );
 end ID_EX;
 
@@ -113,5 +115,6 @@ signal regEn : std_logic;
     PC_P1_U: my_DEnDFF generic map (n=>32) port map (Clk,regEn,resetSignal,PC_Pl,PC_Pl_Out);
     Shift: my_DEnDFF generic map (n=>5) port map (Clk,regEn,resetSignal,Shift_Value,Shift_Value_out);
     INPort: my_DEnDFF generic map (n=>16) port map (Clk,regEn,resetSignal,INPORT_IN,INPORT_OUT);
+    oneop: DEbit_dff port map (Clk,regEn,resetSignal,one_op,one_op_out);
    
 end My_ID_EX;

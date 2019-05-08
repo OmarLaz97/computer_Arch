@@ -24,7 +24,9 @@ Entity CUnit is
         Call_Sig: out std_logic;
         WB_DeMux: out std_logic;
         WB_Mux: out std_logic_vector(1 downto 0);
-        WB_Sig: out std_logic); 
+        WB_Sig: out std_logic;
+	  one_op: out std_logic
+); 
 end CUnit;
 
 Architecture a_CU of CUnit is
@@ -52,6 +54,7 @@ Architecture a_CU of CUnit is
                 WB_DeMux <= '0';
                 WB_Mux <= "00";
                 WB_Sig <= '0';
+                one_op<='0';
 
             elsif  opCode = "00001" then --SETC
             resetSignal <= '0';
@@ -74,6 +77,7 @@ Architecture a_CU of CUnit is
             WB_DeMux <= '0';
             WB_Mux <= "00";
             WB_Sig <= '0';
+            one_op<='0';
 
             elsif opCode = "00010" then --ClrC
             resetSignal <= '0';
@@ -96,6 +100,7 @@ Architecture a_CU of CUnit is
             WB_DeMux <= '0';
             WB_Mux <= "00";
             WB_Sig <= '0';
+            one_op<='0';
 
             elsif opCode = "00011" then --Not
             resetSignal <= '0';
@@ -118,6 +123,7 @@ Architecture a_CU of CUnit is
             WB_DeMux <= '0';
             WB_Mux <= "10" ;
             WB_Sig <= '1';
+            one_op<='1';
 
             elsif opCode = "00100" then  --INC
             resetSignal <= '0';
@@ -140,6 +146,7 @@ Architecture a_CU of CUnit is
             WB_DeMux <= '0';
             WB_Mux <= "10";
             WB_Sig <= '1';
+            one_op<='1';
 
             elsif opCode = "00101" then --dec
             resetSignal <= '0';
@@ -162,6 +169,7 @@ Architecture a_CU of CUnit is
             WB_DeMux <= '0';
             WB_Mux <= "10";
             WB_Sig <= '1';
+            one_op<='1';
             
             elsif opCode = "00110" then --out
             resetSignal <= '0';
@@ -184,6 +192,7 @@ Architecture a_CU of CUnit is
             WB_DeMux <= '1';
             WB_Mux <= "00";
             WB_Sig <= '0';
+            one_op<='0';
 
             elsif opCode = "00111" then --in
             resetSignal <= '0';
@@ -206,6 +215,7 @@ Architecture a_CU of CUnit is
             WB_DeMux <= '0';
             WB_Mux <= "11";
             WB_Sig <= '1';
+            one_op<='1';
 
             elsif opCode = "01000" then --mov
             resetSignal <= '0';
@@ -228,6 +238,7 @@ Architecture a_CU of CUnit is
             WB_DeMux <= '0';
             WB_Mux <= "10";
             WB_Sig <= '1';
+            one_op<='0';
 
             elsif opCode = "01001" then --ADD
             resetSignal <= '0';
@@ -250,6 +261,7 @@ Architecture a_CU of CUnit is
             WB_DeMux <= '0';
             WB_Mux <= "10";
             WB_Sig <= '1';
+            one_op<='0';
 
             elsif opCode = "01010" then --MUL
             resetSignal <= '0';
@@ -272,6 +284,7 @@ Architecture a_CU of CUnit is
             WB_DeMux <= '0';
             WB_Mux <= "10";
             WB_Sig <= '1';
+            one_op<='0';
 
             elsif opCode = "01011" then --Sub
             resetSignal <= '0';
@@ -294,6 +307,7 @@ Architecture a_CU of CUnit is
             WB_DeMux <= '0';
             WB_Mux <= "10";
             WB_Sig <= '1';
+            one_op<='0';
 
             elsif opCode = "01100" then --ANd
             resetSignal <= '0';
@@ -316,6 +330,7 @@ Architecture a_CU of CUnit is
             WB_DeMux <= '0';
             WB_Mux <= "10";
             WB_Sig <= '1';
+            one_op<='0';
 
             elsif opCode = "01101" then --OR
             resetSignal <= '0';
@@ -338,6 +353,7 @@ Architecture a_CU of CUnit is
             WB_DeMux <= '0';
             WB_Mux <= "10";
             WB_Sig <= '1';
+            one_op<='0';
 
             elsif opCode = "01110" then --SHL
             resetSignal <= '0';
@@ -360,6 +376,7 @@ Architecture a_CU of CUnit is
             WB_DeMux <= '0';
             WB_Mux <= "10";
             WB_Sig <= '1';
+            one_op<='1';
 
             elsif opCode = "01111" then --SHR
             resetSignal <= '0';
@@ -382,6 +399,7 @@ Architecture a_CU of CUnit is
             WB_DeMux <= '0';
             WB_Mux <= "10";
             WB_Sig <= '1';
+            one_op<='1';
             
 
 	    elsif opCode = "10000" then --PUSH
@@ -405,6 +423,7 @@ Architecture a_CU of CUnit is
             WB_DeMux <= '0';
             WB_Mux <= "00";
             WB_Sig <= '0';
+            one_op<='0';
            
 
 	    elsif opCode = "10001" then --POP
@@ -428,6 +447,7 @@ Architecture a_CU of CUnit is
             WB_DeMux <= '0';
             WB_Mux <= "00";
             WB_Sig <= '1';
+            one_op<='1';
             
 
 	    elsif opCode = "10010" then --LDM
@@ -451,6 +471,7 @@ Architecture a_CU of CUnit is
             WB_DeMux <= '0';
             WB_Mux <= "01";
             WB_Sig <= '1';
+            one_op<='1';
             
 
 
@@ -475,6 +496,7 @@ Architecture a_CU of CUnit is
             WB_DeMux <= '0';
             WB_Mux <= "00";
             WB_Sig <= '1';
+            one_op<='1';
             
 
 	    elsif opCode = "10100" then --STD
@@ -498,6 +520,7 @@ Architecture a_CU of CUnit is
             WB_DeMux <= '0';
             WB_Mux <= "00";
             WB_Sig <= '0';
+            one_op<='0';
             
 
  	    elsif opCode = "10101" then --jz
@@ -521,6 +544,7 @@ Architecture a_CU of CUnit is
             WB_DeMux <= '0';
             WB_Mux <= "00";
             WB_Sig <= '0';
+            one_op<='0';
             
 
  	    elsif opCode = "10110" then --jn
@@ -544,6 +568,7 @@ Architecture a_CU of CUnit is
             WB_DeMux <= '0';
             WB_Mux <= "00";
             WB_Sig <= '0';
+            one_op<='0';
             
 
 	    elsif opCode = "10111" then --jc
@@ -567,6 +592,7 @@ Architecture a_CU of CUnit is
             WB_DeMux <= '0';
             WB_Mux <= "00";
             WB_Sig <= '0';
+            one_op<='0';
             
 
 	    elsif opCode = "11000" then --j
@@ -590,6 +616,7 @@ Architecture a_CU of CUnit is
             WB_DeMux <= '0';
             WB_Mux <= "00";
             WB_Sig <= '0';
+            one_op<='0';
            
 
 	   elsif opCode = "11001" then --call
@@ -613,6 +640,7 @@ Architecture a_CU of CUnit is
             WB_DeMux <= '0';
             WB_Mux <= "00";
             WB_Sig <= '0';
+            one_op<='0';
             
 
 	    elsif opCode = "11010" then --ret
@@ -636,6 +664,7 @@ Architecture a_CU of CUnit is
             WB_DeMux <= '0';
             WB_Mux <= "00";
             WB_Sig <= '0';
+            one_op<='0';
             
 
 	    elsif opCode = "11011" then --rti TODO
@@ -659,6 +688,7 @@ Architecture a_CU of CUnit is
             WB_DeMux <= '0';
             WB_Mux <= "00";
             WB_Sig <= '0';
+            one_op<='0';
             end if;
 
         end process;

@@ -21,9 +21,10 @@ Entity Mem_Wb is
 		Rdest_out : out std_logic_vector (2 downto 0);
 		Memout_mem : out std_logic_vector(15 downto 0);
 		INPORT_IN: in std_logic_vector(15 downto 0);
-		INPORT_OUT: out std_logic_vector(15 downto 0)
-
-);
+		INPORT_OUT: out std_logic_vector(15 downto 0);
+ 	one_op: in std_logic;
+ 	one_op_out: out std_logic
+     );
 end Mem_Wb;
 
 Architecture My_Mem_Wb of Mem_Wb is
@@ -53,5 +54,6 @@ signal regEn : std_logic;
   WB_Sig_U: DEbit_dff port map (Clk,regEn,resetSignal,WB_Sig,WB_Sig_Out);
   Imm_Val_U: my_DEnDFF generic map (n=>16) port map (Clk,regEn,resetSignal,Imm_Val,Imm_Val_Out);
   INPort: my_DEnDFF generic map (n=>16) port map (Clk,regEn,resetSignal,INPORT_IN,INPORT_OUT);
+oneop: DEbit_dff port map (Clk,regEn,resetSignal,one_op,one_op_out);
  
 end My_Mem_Wb;

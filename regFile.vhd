@@ -13,7 +13,9 @@ Entity Reg_file is
 		MultSig: in std_logic;
 		wbSig: in std_logic;
 		R_data1: out std_logic_vector(15 downto 0);
-		R_data2: out std_logic_vector (15 downto  0));
+		R_data2: out std_logic_vector (15 downto  0);
+		on_op : in std_logic
+);
 end entity;
 
 Architecture a_Reg_file of Reg_file is
@@ -40,14 +42,23 @@ Reg7: my_nDFF_REG generic map (n=>16) port map (Clk,en1(6),en2(6),Rst,W_data1,W_
 Reg8: my_nDFF_REG generic map (n=>16) port map (Clk,en1(7),en2(7),Rst,W_data1,W_data2,x8);
 
  
-en1<="00000001" when W_reg1="000" and wbSig = '1' else
-    "00000010" when W_reg1="001" and wbSig = '1' else
-    "00000100" when W_reg1="010" and wbSig = '1' else
-    "00001000" when W_reg1="011" and wbSig = '1' else
-    "00010000" when W_reg1="100" and wbSig = '1' else
-    "00100000" when W_reg1="101" and wbSig = '1' else
-    "01000000" when W_reg1="110" and wbSig = '1' else
-    "10000000" when W_reg1="111" and wbSig = '1' else
+en1<="00000001" when W_reg1="000"and wbSig = '1' and on_op = '0' else
+    "00000010" when W_reg1="001" and wbSig = '1' and on_op = '0' else
+    "00000100" when W_reg1="010" and wbSig = '1' and on_op = '0' else
+    "00001000" when W_reg1="011" and wbSig = '1' and on_op = '0' else
+    "00010000" when W_reg1="100" and wbSig = '1' and on_op = '0' else
+    "00100000" when W_reg1="101" and wbSig = '1' and on_op = '0' else
+    "01000000" when W_reg1="110" and wbSig = '1' and on_op = '0' else
+    "10000000" when W_reg1="111" and wbSig = '1' and on_op = '0' else
+
+    "00000001" when W_reg2="000" and wbSig = '1' and on_op = '1' else
+    "00000010" when W_reg2="001" and wbSig = '1' and on_op = '1' else
+    "00000100" when W_reg2="010" and wbSig = '1' and on_op = '1' else
+    "00001000" when W_reg2="011" and wbSig = '1' and on_op = '1' else
+    "00010000" when W_reg2="100" and wbSig = '1' and on_op = '1' else
+    "00100000" when W_reg2="101" and wbSig = '1' and on_op = '1' else
+    "01000000" when W_reg2="110" and wbSig = '1' and on_op = '1' else
+    "10000000" when W_reg2="111" and wbSig = '1' and on_op = '1' else
     "00000000";
 
 en2<="00000001" when W_reg2="000" and wbSig = '1' and MultSig = '1' else

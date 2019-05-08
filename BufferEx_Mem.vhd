@@ -40,9 +40,10 @@ Entity Ex_Mem is
 		PC_Out: out std_logic_vector(31 downto 0);
 	        PC_Pl_Out: out std_logic_vector(31 downto 0);
 		INPORT_IN: in std_logic_vector(15 downto 0);
-		INPORT_OUT: out std_logic_vector(15 downto 0)
-
-);
+		INPORT_OUT: out std_logic_vector(15 downto 0);
+ 	one_op: in std_logic;
+ 	one_op_out: out std_logic
+     );
 end Ex_Mem;
 
 Architecture My_Ex_Mem of Ex_Mem is
@@ -81,5 +82,6 @@ signal regEn : std_logic;
   PC_U: my_DEnDFF generic map (n=>32) port map (Clk,regEn,resetSignal,PC,PC_Out);
   PC_P1_U: my_DEnDFF generic map (n=>32) port map (Clk,regEn,resetSignal,PC_Pl,PC_Pl_Out);
   INPort: my_DEnDFF generic map (n=>16) port map (Clk,regEn,resetSignal,INPORT_IN,INPORT_OUT);
+   oneop: DEbit_dff port map (Clk,regEn,resetSignal,one_op,one_op_out);
  
 end My_Ex_Mem;

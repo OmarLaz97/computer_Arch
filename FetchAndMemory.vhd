@@ -4,14 +4,9 @@ use ieee.numeric_std.all;
 
 entity FetchMemory is
 port(
-R2: in std_logic;
 Clk,Reset,Int: in std_logic;
-datain1,datain2: in std_logic_vector(15 downto 0);
-
-Rsrc:in std_logic_vector(15 downto 0);
 dataout1,dataout2: inout std_logic_vector(15 downto 0);
-FetchIn1: in std_logic_vector(31 downto 0);
-Mux1: in std_logic
+FetchIn1: in std_logic_vector(31 downto 0)
 
 );
 end entity;
@@ -111,7 +106,8 @@ component CUnit is
         Call_Sig: out std_logic;
         WB_DeMux: out std_logic;
         WB_Mux: out std_logic_vector(1 downto 0);
-        WB_Sig: out std_logic); 
+        WB_Sig: out std_logic;
+        one_op: out std_logic); 
 End component;
 
 component Reg_file is
@@ -126,7 +122,9 @@ component Reg_file is
 		MultSig: in std_logic;
 		wbSig: in std_logic;
 		R_data1: out std_logic_vector(15 downto 0);
-		R_data2: out std_logic_vector (15 downto  0));
+		R_data2: out std_logic_vector (15 downto  0);
+		on_op : in std_logic
+);
 end component;
 
 component ID_EX is 
@@ -189,7 +187,9 @@ component ID_EX is
 	Shift_Value : in std_logic_vector (4 downto 0);
 	Shift_Value_out : out std_logic_Vector (4 downto 0);
 	INPORT_IN: in std_logic_vector(15 downto 0);
-	INPORT_OUT: out std_logic_vector(15 downto 0)
+	INPORT_OUT: out std_logic_vector(15 downto 0);
+ 	one_op:in std_logic;
+ 	one_op_out: out std_logic
      );
 end component;
 
@@ -213,7 +213,9 @@ component Mem_Wb is
 		Rdest_out : out std_logic_vector (2 downto 0);
 		Memout_mem : out std_logic_vector(15 downto 0);
 		INPORT_IN: in std_logic_vector(15 downto 0);
-		INPORT_OUT: out std_logic_vector(15 downto 0)
+		INPORT_OUT: out std_logic_vector(15 downto 0);
+ 		one_op: in std_logic;
+ 		one_op_out: out std_logic
 
 );
 end component;
@@ -257,7 +259,9 @@ component Ex_Mem is
 	        PC_Out: out std_logic_vector(31 downto 0);
                 PC_Pl_Out: out std_logic_vector(31 downto 0);
 		INPORT_IN: in std_logic_vector(15 downto 0);
-		INPORT_OUT: out std_logic_vector(15 downto 0)
+		INPORT_OUT: out std_logic_vector(15 downto 0);
+ 		one_op: in std_logic;
+ 		one_op_out: out std_logic
 
 );
 end component;
@@ -423,7 +427,11 @@ signal W_reg2:  std_logic_vector (2 downto 0);
 signal W_data1: std_logic_vector (15 downto 0);
 signal W_data2: std_logic_vector (15 downto 0);
 signal MultSig: std_logic;
-signal wbSig:   std_logic;
+signal wbSig  : std_logic;
+signal one_op : std_logic;
+signal one_op_IDEX : std_logic;
+signal one_op_EXMEM : std_logic;
+signal one_op_MEMWB : std_logic;
 begin
 
 
@@ -444,10 +452,10 @@ opCode <= Instr_Out(15 downto 11);
 Rsrc1<= Instr_Out(10 downto 8);
 Rsrc2<= Instr_Out(7 downto 5);
 ImmShift<=Instr_Out (7 downto 3);
-controlUnit:CUnit PORT MAP (Clk,opCode,Reset,resetSignal,Mux_PcP1_Call_Jump,Mux_Mux1_Mem,Mux_MemAdressValue,Mem_Write1_1address,Mem_write2_2addresses,Mem_Read,Mem_Read2,Mux_MemData,Reg_File_Read,Multiply_Sig,Stack_Write,Mux_Stack,ALU_OP,Flag_Write,Jump_Signal,Call_Sig,WB_DeMux,WB_Mux,WB_Sig);
+controlUnit:CUnit PORT MAP (Clk,opCode,Reset,resetSignal,Mux_PcP1_Call_Jump,Mux_Mux1_Mem,Mux_MemAdressValue,Mem_Write1_1address,Mem_write2_2addresses,Mem_Read,Mem_Read2,Mux_MemData,Reg_File_Read,Multiply_Sig,Stack_Write,Mux_Stack,ALU_OP,Flag_Write,Jump_Signal,Call_Sig,WB_DeMux,WB_Mux,WB_Sig,one_op);
 
 
-RegFile :Reg_file PORT MAP(Clk,Reset,Rsrc1,Rsrc2,W_reg1,W_reg2,W_data1,W_data2,MultSig,wbSig,R_data1,R_data2 );
+RegFile :Reg_file PORT MAP(Clk,Reset,Rsrc1,Rsrc2,W_reg2,W_reg1,W_data1,W_data2,MultSig,wbSig,R_data1,R_data2,one_op_MEMWB );
 stackpointer : SP PORT MAP(Clk,Reset,Stack_Write,Mux_Stack,SP_OUT);
 HazardDetectionUnit :HDU PORT MAP(Reset,Mem_Read_Out,Mem_Read_Out_EXME,Mem_Write1_1address_Out_EXME,Mem_write2_2addresses_Out_EXME,Rsrc1,Rsrc2,RSrc_Address_Out,PCWrite,fitch_decode_W,stall);
 
@@ -456,7 +464,7 @@ id_EXRESET <=Reset or stallout;
 IDEXBUFF :  ID_EX PORT MAP(Clk,id_EXRESET,Mux_MemAdressValue,Mem_Write1_1address,Mem_write2_2addresses,Mem_Read,Mem_Read2,Mux_MemData,Reg_File_Read,Multiply_Sig,ALU_OP,Flag_Write,Jump_Signal,Call_Sig,WB_DeMux,WB_Mux,WB_Sig,R_data1,R_data2,Rsrc1,Rsrc2,imm,EA,SP_OUT,
 Mux_MemAdressValue_Out,Mem_Write1_1address_Out,Mem_write2_2addresses_Out,Mem_Read_Out,Mem_read2_ID_EX, Mux_MemData_Out,Reg_File_Read_Out,Multiply_Sig_Out,ALU_OP_Out
 ,Flag_Write_Out,Jump_Signal_Out,Call_Sig_Out,WB_DeMux_Out,WB_Mux_Out,WB_Sig_Out,RSrc_Out,RDest_Out,RSrc_Address_Out,RDest_Address_Out,Imm_Val_Out,Eff_Addr_Out,Stack_Ptr_Out,
-PC_Out,PC_Pl_Out,PC_DE,PC_Pl_DE,immShiftin,ImmShift,INPORTOUT_IF_ID,INPORTOUT_ID_IE);
+PC_Out,PC_Pl_Out,PC_DE,PC_Pl_DE,immShiftin,ImmShift,INPORTOUT_IF_ID,INPORTOUT_ID_IE,one_op,one_op_IDEX);
 
 
 ExcuitUnit1: EXUnit PORT MAP (RSrc_Out,RDest_Out,ImmShift,ALU_OP_Out,'0',Clk,Flag_Write_Out,Reset,ALuOutput1,ALuOutput2,N,Z,Cout);
@@ -472,12 +480,14 @@ Mux1Selector<=(js or Call_Sig_Out);
 ExcuitMemBuff :  Ex_Mem PORT MAP (Clk,Reset,ALuOutput1,ALuOutput2,RSrc_Address_Out,RDest_Address_Out,Mux_MemAdressValue_Out,Mem_Write1_1address_Out,Mem_write2_2addresses_Out,Mem_Read_Out,Mem_read2_ID_EX, Mux_MemData_Out,Multiply_Sig_Out,WB_DeMux_Out,WB_Mux_Out,WB_Sig_Out,Imm_Val_Out,Eff_Addr_Out,Stack_Ptr_Out,
 Mux_MemAdressValue_Out_EXME,Mem_Write1_1address_Out_EXME,Mem_write2_2addresses_Out_EXME,Mem_Read_Out_EXME,Mem_read2_EX_Mem,Mux_MemData_Out_EXME,Multiply_Sig_Out_EXME,WB_DeMux_Out_EXME
 ,WB_Mux_Out_EXME,WB_Sig_Out_EXME,Imm_Val_Out_EXME,Eff_Addr_Out_EXME,Stack_Ptr_Out_EXME,ALU1_out_EXME,ALU2_out_EXME,Rsource_out_EXME,Rdest_out_EXME
-,PC_DE,PC_Pl_DE,PC_Out_EXME,PC_Pl_Out_EXME,INPORTOUT_ID_IE,INPORTOUT_IE_IM);
+,PC_DE,PC_Pl_DE,PC_Out_EXME,PC_Pl_Out_EXME,INPORTOUT_ID_IE,INPORTOUT_IE_IM,one_op_IDEX,one_op_EXMEM);
 
 
 memwbbuffer :Mem_Wb  PORT MAP(Clk,Reset,ALU1_out_EXME,ALU2_out_EXME,dataout1,Rsource_out_EXME,Rdest_out_EXME,Multiply_Sig_Out_EXME
      	  ,WB_DeMux_Out_EXME,WB_Mux_Out_EXME,WB_Sig_Out_EXME
-,Imm_Val_Out_EXME,MultSig,WB_DeMux_Out_mem,WB_Mux_Out_mem,wbSig,Imm_Val_Out_mem,ALU1_out_mem,W_data2,W_reg1,W_reg2,Memout_memwbbuff ,INPORTOUT_IE_IM,INPORT_OUT_mem);
+,Imm_Val_Out_EXME,MultSig,WB_DeMux_Out_mem,WB_Mux_Out_mem,wbSig,
+Imm_Val_Out_mem,ALU1_out_mem,W_data2,W_reg1,W_reg2,Memout_memwbbuff ,INPORTOUT_IE_IM,INPORT_OUT_mem,one_op_EXMEM,one_op_MEMWB);
+
 
 writeback: Wb_unit PORT MAP (ALU1_out_mem, Memout_memwbbuff,Imm_Val_Out_mem,INPORT_OUT_mem,WB_DeMux_Out_mem,WB_Mux_Out_mem
 ,W_data1,Out1);
