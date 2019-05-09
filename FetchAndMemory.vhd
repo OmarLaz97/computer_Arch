@@ -5,6 +5,8 @@ use ieee.numeric_std.all;
 entity FetchMemory is
 port(
 Clk,Reset,Int: in std_logic;
+InPort: in std_logic_vector(15 downto 0);
+OutPort: out std_logic_vector(15 downto 0);
 dataout1,dataout2: inout std_logic_vector(15 downto 0)
 
 
@@ -486,7 +488,7 @@ Mux11:Mux4x2 GENERIC MAP(32) PORT MAP(Mux_MemAdressValue_Out_EXME,PCout,Stack_Pt
 Mux22:Mux4x2 GENERIC MAP(16) PORT MAP(Mux_MemData_Out_EXME,ALU1_out_EXME,PC_Out_EXME(31 downto 16),PC_Pl_Out_EXME(31 downto 16),(Others =>'0'),Mux2Output);
 Mux33:Mux4x2 GENERIC MAP(16) PORT MAP(Mux_MemData_Out_EXME,(Others =>'0'),PC_Out_EXME(15 downto 0),PC_Pl_Out_EXME(15 downto 0),(Others =>'0'),Mux3Output);
 
-
+INPORTIN_IF_ID <= InPort;
 Fetch1:Fetch PORT MAP(FetchIn1,Memout,PCWrite,Int,Clk,Reset,Mux1Selector,Mux_Mux1_Mem,PCout,PCPlusOne);
 Memory1:Memory PORT MAP(Clk,Mem_Write1_1address_Out_EXME,Mem_write2_2addresses_Out_EXME,'1','1',Reset,Int,Mux1Output,Mux2Output,Mux3Output,dataout1,dataout2);
 fetchdecode:IF_ID PORT MAP (Clk,Reset,fitch_decode_W,dataout1,dataout2,PCout,PCPlusOne,Instr_Out,Instr2_Out,PC_Out,PC_Pl_Out,INPORTIN_IF_ID,INPORTOUT_IF_ID);
@@ -524,8 +526,8 @@ ExcuitUnit1: EXUnit PORT MAP (RSrc_Out,RDest_Out,ImmShift,ALU_OP_Out,'0',Clk,Fla
 
 
 
-forwardingunit :FU IS PORT MAP (Reset,WB_Sig_Out_EXME,wbSig,Multiply_Sig_Out_EXME,MultSig,one_op_EXMEM,one_op_MEMWB,RSrc_Address_Out,RDest_Address_Out,Rsource_out_EXME,Rdest_out_EXME,
-W_reg1,W_reg2,F01,F02,F11,F12,F0,F1);
+--forwardingunit :FU IS PORT MAP (Reset,WB_Sig_Out_EXME,wbSig,Multiply_Sig_Out_EXME,MultSig,one_op_EXMEM,one_op_MEMWB,RSrc_Address_Out,RDest_Address_Out,Rsource_out_EXME,Rdest_out_EXME,
+--W_reg1,W_reg2,F01,F02,F11,F12,F0,F1);
 
 
 
@@ -555,4 +557,6 @@ Imm_Val_Out_mem,ALU1_out_mem,W_data2,W_reg1,W_reg2,Memout_memwbbuff ,INPORTOUT_I
 
 writeback: Wb_unit PORT MAP (ALU1_out_mem, Memout_memwbbuff,Imm_Val_Out_mem,INPORT_OUT_mem,WB_DeMux_Out_mem,WB_Mux_Out_mem
 ,W_data1,Out1);
+
+OutPort <= Out1;
 end architecture;
